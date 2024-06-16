@@ -144,3 +144,51 @@ class DataAnalizer(DataCollector):
                                         index=data_to_analize[1],
                                         columns=data_to_analize[1])
             sb.heatmap(corr_heatmap_df, linewidth=.5)
+
+
+    def formulate_final_json(self, samples, file_path):
+    
+        final_json = {
+            "Id": "None",
+            "CustomerId": "None",
+            "СПГЗ": {}
+        }
+
+        cll_STE_labels = self.cll_dataframe["Название СТЕ"]
+        cll_STE_labels = self._transform_strings(cll_STE_labels)
+        self.cll_dataframe["Название СТЕ"] = cll_STE_labels
+
+        for sample_key in samples:
+
+
+            serched_dataframe = self.cll_dataframe[self.cll_dataframe["Название СТЕ"] == sample_key]
+            if serched_dataframe.shape[0] != 1:
+                sample = serched_dataframe.sample()
+
+                if serched_dataframe.shape[0] != 0:
+
+                    final_json["СПГЗ"][sample_key] = {
+                        "наименоениве товара": str(sample["Название СТЕ"].to_list()[0]),
+                        "наименование характеристик": str(sample["наименование характеристик"].to_list()[0]),
+                        "КПГЗ код": str(sample["КПГЗ код"].to_list()[0]),
+                        "КПГЗ": str(sample["КПГЗ"].to_list()[0]),
+                        "СПГЗ код": str(sample["СПГЗ код"].to_list()[0]),
+                        "Реестровый номер в РК": str(sample["Реестровый номер в РК"].to_list()[0])
+                    }
+
+            else:
+
+                if serched_dataframe.shape[0] != 0:
+
+                    final_json["СПГЗ"][sample_key] = {
+                        "наименоениве товара": str(serched_dataframe["Название СТЕ"].to_list()[0]),
+                        "наименование характеристик": str(serched_dataframe["наименование характеристик"].to_list()[0]),
+                        "КПГЗ код": str(serched_dataframe["КПГЗ код"].to_list()[0]),
+                        "КПГЗ": str(serched_dataframe["КПГЗ"].to_list()[0]),
+                        "СПГЗ код": str(serched_dataframe["СПГЗ код"].to_list()[0]),
+                        "Реестровый номер в РК": str(serched_dataframe["Реестровый номер в РК"].to_list()[0])
+                    }
+
+        with open(file_path, "w") as json_file:
+
+            js.dump(final_json, json_file)

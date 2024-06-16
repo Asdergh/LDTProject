@@ -247,8 +247,6 @@ class DataCollector(StringPreprocessor):
                 
                 general_STE_collection.append((STE_label_sorted, cll_type, STE_label))
     
-
-
     def generate_all_collections(self):
 
         self.data_collection = self.collect_data_turnover(self.turnover_data_path)
@@ -454,5 +452,5 @@ class DataCollector(StringPreprocessor):
         self.trade_samples_collection = self.combine_data_from_collection(STE_samples=self.trade_samples)
         self.general_samples_collection = self.combine_data_from_collection(STE_samples=self.general_samples)
 
-
+    
 
